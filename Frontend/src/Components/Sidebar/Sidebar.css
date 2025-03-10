@@ -1,0 +1,117 @@
+.sidebar-container {
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    height: 100vh;
+    background-color: #171717;
+    border-radius: 0 10px 10px 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: transform 0.4s ease-in-out;
+    transform: translateX(0);
+  }
+  
+  .sidebar-container.sidebar-collapsed {
+    transform: translateX(-280px);
+  }
+  
+  .sidebar-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    margin-bottom: 0;
+  }
+  
+  .right-logo {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .menu-icon {
+    font-size: 24px;
+    color: #9c9c9c;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .menu-icon:hover {
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  .chat-title-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .inside-chats {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 60px);
+    padding: 12px 10px;
+  }
+  
+  .inside-chats::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .chat-title {
+    color: white;
+    font-size: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    width: 80%;
+    padding: 10px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+    box-sizing: border-box;
+  }
+  
+  .delete-icon {
+    font-size: 14px;
+    color: #9c9c9c;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .delete-icon:hover {
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  .chat-title-selected {
+    padding: 10px 5px;
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+    border-left: 4px solid white;
+  }
+  
+  .chat-title:hover {
+    background: rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transform: scale(1.02);
+  }
+  
+  .sidebar-toggle-icon {
+    font-size: 24px;
+    color: #9c9c9c;
+    position: fixed;
+    top: 21px;
+    left: 16px;
+    z-index: 1001;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .sidebar-toggle-icon:hover {
+    color: white;
+    transform: scale(1.1);
+  }
+  

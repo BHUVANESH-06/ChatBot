@@ -1,0 +1,210 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100vw - 60px);
+  max-width: 900px;
+  min-width: 350px;
+  height: 100vh;
+  color: #e0e0e0;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.chat-container.with-sidebar {
+  width: calc(100vw - 300px - 60px);
+  left: calc(300px + (100vw - 300px) / 2);
+  transform: translateX(-50%);
+}
+
+@media screen and (max-width: 768px) {
+  .chat-container,
+  .chat-container.with-sidebar {
+    left: 50%;
+    width: calc(100vw - 60px);
+    transform: translateX(-50%);
+  }
+}
+.chat-image {
+  max-width: 200px; 
+  border-radius: 8px;
+  margin-top: 10px;
+}
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 80%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar {
+  display: none;
+}
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110px;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 160px; 
+  left: 20px;
+  background: #282c34;
+}
+.button-item-plus.disabled {
+  background-color: #6e6d6d !important; 
+  cursor: not-allowed;
+}
+.preview-image {
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+
+.chat-bubble {
+  max-width: 75%;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  word-wrap: break-word;
+  font-size: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.2s ease-in-out;
+}
+.chat-bubble.user {
+  align-self: flex-end;
+  background-color: #333333d8;
+  color: white;
+  border-radius: 16px 16px 4px 16px;
+}
+.chat-bubble.bot {
+  align-self: flex-start;
+  background-color: #383737;
+  color: #ddd;
+  border-radius: 16px 16px 16px 4px;
+}
+
+.chat-input-container {
+  background-color: #303030;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  transition: all 0.3s ease-in-out;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+.chat-input-container:hover {
+  transform: translateY(-3px);
+}
+.chat-input {
+  width: 95%;
+  padding: 12px 14px;
+  padding-top: 20px;
+  font-size: 15px;
+  color: #e0e0e0;
+  background-color: #303030;
+  border: none;
+  outline: none;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  background-color: #303030;
+  padding: 10px;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+.left-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.button-item {
+  display: flex;
+  align-items: center;
+  background-color: #303030;
+  border: 0.5px solid gray;
+  padding: 10px 16px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.button-item-plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid gray;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease,
+    border-color 0.2s ease;
+}
+
+.button-item-plus:hover {
+  background-color: #505050;
+  transform: scale(1.05);
+}
+
+.button-item-plus:active {
+  transform: scale(0.95);
+}
+
+.button-item p {
+  margin: 0;
+  font-size: 16px;
+  color: #e0e0e0;
+  margin-right: 8px;
+}
+
+.button-item:hover {
+  background-color: #505050;
+  transform: scale(1.05);
+}
+
+.button-item:active {
+  transform: scale(0.95);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .chat-input {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
