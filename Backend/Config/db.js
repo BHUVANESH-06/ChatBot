@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const connectDB = async () => {
-    console.log(process.env.MONGO_URI)
   try {
     await mongoose.connect("mongodb+srv://bhuvaneshg:deepakbhuvi@cluster0.e2m47pj.mongodb.net/MiniGpt?retryWrites=true&w=majority", {
       useNewUrlParser: true,

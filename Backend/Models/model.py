@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
 from ultralytics import YOLO
 import cv2
 from transformers import BlipProcessor, BlipForConditionalGeneration
@@ -6,84 +7,104 @@ from PIL import Image
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
-import base64
 import io
+import json
+import re
 
-app = Flask(__name__)
-load_dotenv()
+app = FastAPI()
 
-# Load AI models
-yolo_model = YOLO("yolov8n.pt")
-processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
-blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Gemini AI Setup
-api_key = os.getenv("GEMINI_KEY")
-if not api_key:
-    raise ValueError("API Key is missing! Check your .env file.")
-genai.configure(api_key=api_key)
-gemini_model = genai.GenerativeModel("gemini-pro")
+# Store last uploaded image data in memory
+last_image_data = {"detected_objects": [], "caption": ""}
 
+def load_models():
+    yolo = YOLO("yolov8n.pt")
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+    blip = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+    return yolo, processor, blip
+
+yolo_model, processor, blip_model = load_models()
+
+def configure_genai():
+    load_dotenv("C:/1604/.env")
+    api_key = os.getenv("GEMINI_KEY")
+    if not api_key:
+        raise ValueError("API Key is missing! Check your .env file.")
+    genai.configure(api_key=api_key)
+    return genai.GenerativeModel("gemini-2.0-flash")
+
+genai_model = configure_genai()
 
 def detect_objects(image):
-    """Detect objects in an image using YOLO."""
-    results = yolo_model(image)
-    detected_objects = [yolo_model.names[int(box.cls)] for result in results for box in result.boxes]
-    return detected_objects
-
-
-def generate_caption(image):
-    """Generate a caption for an image using BLIP."""
-    inputs = processor(images=image, return_tensors="pt")
-    caption_ids = blip_model.generate(**inputs)
-    caption = processor.batch_decode(caption_ids, skip_special_tokens=True)[0]
-    return caption
-
-
-def get_chatbot_response(user_query, caption=None, detected_objects=None):
-    """Generate a response using Gemini AI."""
-    prompt = f"You are a helpful chatbot. Respond to the user's query.\n\n"
-
-    if caption and detected_objects:
-        prompt += f"Image Caption: {caption}\nDetected Objects: {detected_objects}\n\n"
-        prompt += "User Query: " + user_query + "\n\nResponse:"
-    else:
-        prompt += "User Query: " + user_query + "\n\nResponse:"
-
-    response = gemini_model.generate_content(prompt)
-    return response.text.strip()
-
-
-@app.route("/chat", methods=["POST"])
-def chat(): 
-    print(os.getenv("GEMINI_KEY"))
-    print("Hi")
-    """Handle user chat requests (with or without an image)."""
+    """Detect objects in an image using YOLO model."""
     try:
-        data = request.json
-        user_query = data.get("query", "")
-        image_data = data.get("image", None)
+        image_array = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        results = yolo_model(image_array)
+        return [yolo_model.names[int(box.cls)] for result in results for box in result.boxes]
+    except Exception:
+        return []
+def generate_caption(image):
+    """Generate an image caption using BLIP model."""
+    try:
+        img = Image.open(io.BytesIO(image)).convert("RGB")
+        inputs = processor(images=img, return_tensors="pt")
+        caption_ids = blip_model.generate(**inputs)
+        return processor.batch_decode(caption_ids, skip_special_tokens=True)[0]
+    except Exception:
+        return "Caption could not be generated."
 
-        if image_data:
-            # Convert base64 to Image
-            image_bytes = base64.b64decode(image_data)
-            image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+@app.post("/chatbot/")
+async def chatbot(
+    user_query: str = Form(...), 
+    image: UploadFile = File(None),
+    chat_history: str = Form("[]") 
+):
+    global last_image_data 
+    try:
+        chat_history = json.loads(chat_history)  
 
-            # Process image
-            detected_objects = detect_objects(cv2.cvtColor(cv2.imread(io.BytesIO(image_bytes)), cv2.COLOR_RGB2BGR))
-            caption = generate_caption(image)
+        if image:
+            image_bytes = await image.read()
+            detected_objects = detect_objects(image_bytes)
+            caption = generate_caption(image_bytes)
 
-            # Get chatbot response based on image
-            response_text = get_chatbot_response(user_query, caption, detected_objects)
+            last_image_data = {"detected_objects": detected_objects, "caption": caption}
         else:
-            # No image, get chatbot response normally
-            response_text = get_chatbot_response(user_query)
-        print(response_text)
-        return jsonify({"response": response_text})
+            detected_objects = last_image_data["detected_objects"]
+            caption = last_image_data["caption"]
+
+        chat_context = "\n".join([f"{msg['sender']}: {msg['text']}" for msg in chat_history])
+        prompt = (f"You are a helpful chatbot. Consider the full conversation history before answering:\n\n"
+                  f"{chat_context}\n\n"
+                  f"Caption: {caption if caption else 'None'}\n"
+                  f"Detected Objects: {', '.join(detected_objects) if detected_objects else 'None'}\n"
+                  f"User Query: {user_query}\n"
+                  "Response:")
+
+        response = genai_model.generate_content(prompt).text
+        return {"response": response, "detected_objects": detected_objects, "caption": caption}
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return {"error": str(e)}
 
+import re
 
-if __name__ == "__main__":
-    app.run(debug=True)
+@app.post("/chatbot/generate_title/")
+async def generate_title(user_query: str = Form(...)):
+    try:
+        prompt = f"Generate a short and engaging chat title in exactly three words based on this query: {user_query}. Only return the title, nothing else."
+        title = genai_model.generate_content(prompt).text  
+
+        # Remove any unwanted symbols like **, quotes, or punctuation
+        clean_title = re.sub(r"[^\w\s]", "", title).strip()
+
+        return {"chat_title": " ".join(clean_title.split()[:3])}  # Ensures only three words
+    except Exception as e:
+        return {"error": str(e)}

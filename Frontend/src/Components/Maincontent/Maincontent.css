@@ -66,6 +66,19 @@ body {
   left: 20px;
   background: #282c34;
 }
+.image-preview.no-messages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110px;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 550px; 
+  left: 20px;
+  background: #282c34;
+}
 .button-item-plus.disabled {
   background-color: #6e6d6d !important; 
   cursor: not-allowed;
@@ -75,31 +88,48 @@ body {
   max-height: 100px;
   border-radius: 8px;
   object-fit: cover;
+  transition: transform 0.2s ease-in-out;
 }
 
+.preview-image:hover {
+  transform: scale(1.05);
+}
+.loading-spinner {
+  font-size: 20px;
+  color: #fff;
+}
 
 .chat-bubble {
   max-width: 75%;
-  padding: 14px;
+  padding: 14px 16px;
   margin-bottom: 10px;
   border-radius: 12px;
   word-wrap: break-word;
   font-size: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
-.chat-bubble.user {
+
+.chat-bubble.sender {
   align-self: flex-end;
-  background-color: #333333d8;
+  max-width: 230px;
+  background: linear-gradient(135deg, #2a2a2a, #3d3d3d);
   color: white;
   border-radius: 16px 16px 4px 16px;
+  padding: 10px;
+  text-align: left;
 }
+
 .chat-bubble.bot {
   align-self: flex-start;
-  background-color: #383737;
+  background: linear-gradient(135deg, #2b2b2b, #383737);
+  max-width: 400px;
   color: #ddd;
   border-radius: 16px 16px 16px 4px;
+  text-align: left;
 }
+
 
 .chat-input-container {
   background-color: #303030;
@@ -110,23 +140,42 @@ body {
   display: flex;
   transition: all 0.3s ease-in-out;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   padding: 0;
 }
+.chat-input-container.no-messages{
+  margin-bottom: 400px;
+}
+
 .chat-input-container:hover {
   transform: translateY(-3px);
 }
 .chat-input {
   width: 95%;
-  padding: 12px 14px;
-  padding-top: 20px;
   font-size: 15px;
+  padding: 15px 0px;
+  margin: auto;
   color: #e0e0e0;
   background-color: #303030;
   border: none;
   outline: none;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
+  resize: none; 
+  overflow-y: auto;
+  max-height: 120px; 
+}
+.chat-input::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+}
+
+.chat-input::-webkit-scrollbar-thumb {
+  background-color: gray; /* Gray scrollbar */
+  border-radius: 10px;
+}
+
+.chat-input::-webkit-scrollbar-track {
+  background: transparent; /* Hide the background */
 }
 
 .buttons {
