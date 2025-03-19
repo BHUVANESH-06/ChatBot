@@ -164,6 +164,7 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
                     "<strong>$1</strong>"
                   ),
                 }}
+                style={{ whiteSpace: "pre-line" }}
               />
             )}
 
@@ -232,10 +233,10 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
           onChange={(e) => {
             setInputValue(e.target.value);
             e.target.style.height = "10px";
-            e.target.style.height = e.target.scrollHeight + "px"; // Grow if needed
+            e.target.style.height = e.target.scrollHeight + "px"; 
           }}
           rows={1}
-          style={{ height: "40px", overflowY: "auto" }} // Allow scrolling for long text
+          style={{ height: "40px", overflowY: "auto" }} 
         />
 
         <div className="buttons">

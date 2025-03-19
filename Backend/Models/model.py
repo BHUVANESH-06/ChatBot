@@ -11,6 +11,7 @@ import io
 import json
 import re
 
+load_dotenv()
 app = FastAPI()
 
 app.add_middleware(
@@ -33,8 +34,8 @@ def load_models():
 yolo_model, processor, blip_model = load_models()
 
 def configure_genai():
-    load_dotenv("C:/1604/.env")
     api_key = os.getenv("GEMINI_KEY")
+    print(api_key)
     if not api_key:
         raise ValueError("API Key is missing! Check your .env file.")
     genai.configure(api_key=api_key)
