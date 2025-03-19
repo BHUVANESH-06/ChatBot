@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+ultralytics
+opencv-python-headless
+transformers
+Pillow
+python-dotenv
+google-generativeai
+torch
+torchvision
+torchaudio
