@@ -46,7 +46,6 @@ exports.deleteChat = async (req, res) => {
 exports.updateChatName = async (req, res) => {
   try {
     const { chatName } = req.body;
-    console.log(req.params.chatId, chatName);
     const updatedChat = await Chat.findOneAndUpdate(
       { chatId: req.params.chatId }, 
       { chatName: chatName }, 
