@@ -22,9 +22,12 @@ const Sidebar = ({
   const handleAddChat = async () => {
     try {
       // Fetch all chats to get the current count
-      const response = await fetch("http://localhost:5000/api/chats/allChats", {
-        method: "GET",
-      });
+      const response = await fetch(
+        "https://chatbot-4c9q.onrender.com/api/chats/allChats",
+        {
+          method: "GET",
+        }
+      );
 
       if (!response.ok) {
         console.error("Error fetching chats:", response.statusText);
@@ -48,18 +51,21 @@ const Sidebar = ({
       };
 
       console.log("Creating new chat with ID:", newChatId);
-      const postResponse = await fetch("http://localhost:5000/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newChat),
-      });
+      const postResponse = await fetch(
+        "https://chatbot-4c9q.onrender.com/api/chats",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newChat),
+        }
+      );
 
       if (!postResponse.ok) throw new Error("Failed to create chat");
 
       const savedChat = await postResponse.json();
       console.log("New chat saved:", savedChat);
 
-      setChatNames([savedChat, ...chatNames]); 
+      setChatNames([savedChat, ...chatNames]);
     } catch (error) {
       console.error("Error adding chat:", error);
     }
@@ -67,7 +73,7 @@ const Sidebar = ({
 
   const deleteChat = async (chatId) => {
     try {
-      await fetch(`http://localhost:5000/api/chats/${chatId}`, {
+      await fetch(`https://chatbot-4c9q.onrender.com/api/chats/${chatId}`, {
         method: "DELETE",
       });
       setChatNames(

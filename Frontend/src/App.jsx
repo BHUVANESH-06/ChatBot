@@ -12,7 +12,9 @@ function App() {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/chats");
+        const response = await fetch(
+          "https://chatbot-4c9q.onrender.com/api/chats"
+        );
         const data = await response.json();
         setChatNames(data);
       } catch (error) {
@@ -40,8 +42,8 @@ function App() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            height: "100vh", 
-            width: "100%", 
+            height: "100vh",
+            width: "100%",
           }}
         >
           <p

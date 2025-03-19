@@ -35,7 +35,7 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
   const fetchMessages = async (chatId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/messages/${chatId}`
+        `https://chatbot-4c9q.onrender.com/api/messages/${chatId}`
       );
       const data = await response.json();
       setMessages(data);
@@ -62,23 +62,22 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
           if (!response.ok) {
             throw new Error("Failed to generate title");
           }
-        
+
           const data = await response.json();
           console.log(data);
-          newChatName = data.chat_title; 
-          console.log(newChatName)
+          newChatName = data.chat_title;
+          console.log(newChatName);
         }
-        try{
+        try {
           const response = await axios.put(
-            `http://localhost:5000/api/chats/update/${chatId}`,
+            `https://chatbot-4c9q.onrender.com/api/chats/update/${chatId}`,
             {
               chatName: newChatName,
             }
           );
-        }catch(error){
-          console.log("An error Occured",error)
+        } catch (error) {
+          console.log("An error Occured", error);
         }
-
       }
       const formData = new FormData();
       formData.append("user_query", inputValue);
@@ -102,7 +101,7 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
       setLoading(true);
 
       try {
-        await fetch("http://localhost:5000/api/messages", {
+        await fetch("https://chatbot-4c9q.onrender.com/api/messages", {
           method: "POST",
           body: newMessage,
         });
@@ -115,7 +114,7 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
 
         const botMessage = { chatId, text: data.response, sender: "bot" };
 
-        await fetch("http://localhost:5000/api/messages", {
+        await fetch("https://chatbot-4c9q.onrender.com/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(botMessage),
@@ -233,10 +232,10 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
           onChange={(e) => {
             setInputValue(e.target.value);
             e.target.style.height = "10px";
-            e.target.style.height = e.target.scrollHeight + "px"; 
+            e.target.style.height = e.target.scrollHeight + "px";
           }}
           rows={1}
-          style={{ height: "40px", overflowY: "auto" }} 
+          style={{ height: "40px", overflowY: "auto" }}
         />
 
         <div className="buttons">
