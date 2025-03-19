@@ -16,8 +16,8 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use("/api/chats", require("./Routes/chatRoutes"));
 app.use("/api/messages", require("./Routes/messageRoutes"));
 
-app.get("/", (req, res) => {
-  res.send("🚀 Backend is running successfully on Vercel!");
-});
+const PORT = process.env.PORT || 5000;
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
