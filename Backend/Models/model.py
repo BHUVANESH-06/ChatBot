@@ -48,6 +48,7 @@ def detect_objects(image_bytes):
     """Detect objects in an image using YOLO model."""
     try:
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        image = image.resize((416, 416))
         results = yolo_model(image)
         detected_objects = [yolo_model.names[int(box.cls)] for result in results for box in result.boxes]
         return detected_objects
@@ -58,6 +59,7 @@ def generate_caption(image_bytes):
     """Generate an image caption using BLIP model."""
     try:
         image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        image = image.resize((224, 224)) 
         inputs = processor(images=image, return_tensors="pt")
         caption_ids = blip_model.generate(**inputs)
         return processor.batch_decode(caption_ids, skip_special_tokens=True)[0]
@@ -71,6 +73,9 @@ async def chatbot(user_query: str = Form(...), image: UploadFile = File(None), c
         chat_history = json.loads(chat_history)
 
         if image:
+            file_size = await image.read()
+            if len(file_size) > 2 * 1024 * 1024:
+                return {"error": "File size too large. Max 2MB allowed."}
             image_bytes = await image.read()
             detected_objects = detect_objects(image_bytes)
             caption = generate_caption(image_bytes)
