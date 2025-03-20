@@ -6,6 +6,7 @@ transformers
 Pillow
 python-dotenv
 google-generativeai
+python-multipart
 torch
 torchvision
 torchaudio
