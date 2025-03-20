@@ -53,7 +53,7 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
           const formData = new FormData();
           formData.append("user_query", inputValue);
           const response = await fetch(
-            "http://localhost:8000/chatbot/generate_title",
+            "https://modelbackend-9y3s.onrender.com/chatbot/generate_title",
             {
               method: "POST",
               body: formData,
@@ -106,7 +106,7 @@ const Maincontent = ({ chatId, isSidebarOpen }) => {
           body: newMessage,
         });
 
-        const response = await fetch("http://localhost:8000/chatbot/", {
+        const response = await fetch("https://modelbackend-9y3s.onrender.com/chatbot/", {
           method: "POST",
           body: formData,
         });
